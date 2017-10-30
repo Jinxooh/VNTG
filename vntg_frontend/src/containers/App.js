@@ -66,16 +66,14 @@ class App extends Component {
                 } else {
                     console.log('no login');
                     storage.remove('profile');
+                    AuthActions.syncProfile(null);
+                    if(this.context.router.history.location.pathname !== '/')
+                        this.context.router.history.push('/');
                 }
             }
         )
 
         
-    }
-
-    handleLogout = () => {
-        console.log('test logout');
-        auth.logout();
     }
 
     handleAuth = async (provider) => {
@@ -110,6 +108,11 @@ class App extends Component {
                 });
             }
         }
+    }
+
+    handleClickBrandLogo = () => {
+        if(this.context.router.history.location.pathname === '/') return;
+        this.context.router.history.push('/');
     }
 
     handleLinkAccount = () => {
@@ -147,19 +150,43 @@ class App extends Component {
         }
     })();
 
+    handleUserMenu = (() => {
+        const { handleHeader } = this;
+
+        return {
+            moveToProfile: () => {
+                handleHeader.close();
+                this.context.router.history.push('/profile');
+            },
+            moveToSetting: () => {
+                handleHeader.close();
+                this.context.router.history.push('/setting');
+            },
+            logout: () => {
+                handleHeader.close();
+                auth.logout();
+            },
+        }
+    })();
+
     render() {
         const { children, status: {modal, profile, header} } = this.props;
-        const { handleModal, handleAuth, handleLinkAccount, handleHeader } = this;
+        const { handleModal, handleAuth, handleLinkAccount, handleHeader, handleClickBrandLogo, handleUserMenu } = this;
         return (
             <div>
                 <Header>
                     <SidebarButton/>
-                    <BrandLogo/>
+                    <BrandLogo onClick={handleClickBrandLogo}/>
                     {profile.get('username') 
                     ? <UserButton onClick={header.getIn(['userMenu', 'open']) ? handleHeader.close : handleHeader.open} thumbnail={profile.get('thumbnail')}/>
                     : <AuthButton onClick={() => handleModal.open({modalName: 'login'})}/>
                     }
-                    <UserMenu visible={header.getIn(['userMenu', 'open'])} onHide={handleHeader.close}/>
+                    <UserMenu 
+                        visible={header.getIn(['userMenu', 'open'])} 
+                        onHide={handleHeader.close} 
+                        displayName={profile.get('displayName')}
+                        handleUserMenu={handleUserMenu}
+                    />
                 </Header>
                 <LoginModal visible={modal.getIn(['login', 'open'])} onHide={()=> handleModal.close('login')}>
                     <SocialLoginButton onClick={()=>{ handleAuth("github")}} types='github'/>
