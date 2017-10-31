@@ -4,11 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node app",
+    "dev": "nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^4.10.0"
+    "eslint": "^4.10.0",
+    "eslint-plugin-async-await": "0.0.0"
+  },
+  "dependencies": {
+    "babel-eslint": "^8.0.1",
+    "koa": "^2.0.0-alpha.8",
+    "koa-router": "^7.1.1"
+  },
+  "eslintConfig": {
+    "extends": "./config/eslint.js"
   }
 }
