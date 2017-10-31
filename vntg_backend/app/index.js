@@ -6,8 +6,12 @@ const app = new Koa();
 const mongo = require('koa-mongo');
 const mongoose = require('mongoose');
 
-const db = mongoose.createConnection('mongodb://localhost/vntg_db');
+const db = mongoose.connection;
+db.once('open', () => {
+  console.log("Connected to mongod server");
+})
 console.log(db);
+mongoose.connect('mongodb://localhost/vntg_db');
 // app.use(serve(path.resolve(__dirname, '../build')));
 // app.use(mongo());
 // app.use(mongo({
@@ -17,6 +21,8 @@ console.log(db);
 //   msc: 100,
 //   min: 1
 // }));
+
+const Book = require('./models/book');
 app.use(async (ctx, next) => {
   ctx.body = 'hlllllll';
 })
