@@ -2,6 +2,7 @@
 
 # dependencies
 vntg_frontend/node_modules
+vntg_backend/node_modules
 
 # testing
 vntg_frontend/coverage
