@@ -1,7 +1,8 @@
-const Router = require('koa-router');
+const express = require('express');
 const auth = require('./auth');
 
-const api = new Router();
-api.use('/auth', auth.routes(), auth.allowedMethods());
+const api = express.Router();
+
+api.use('/auth', auth);
 
 module.exports = api; 

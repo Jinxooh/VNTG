@@ -1,49 +1,77 @@
 /* 모듈 불러오기 */
-const Koa = require('koa');
-// const serve = require('koa-static');
-// const path = require('path');
-// const mongo = require('koa-mongo');
+const http = require('http');
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const session = require('express-session');
+
 const mongoose = require('mongoose');
+const connectMongo = require('connect-mongo');
+
+const passport = require('passport');
+
 const api = require('./api');
-const Router = require('koa-router');
-const bodyParser = require('koa-bodyparser');
 
-const app = new Koa();
-// body-parser 적용
-app.use(bodyParser());
+const path = require('path');
 
-const router = new Router();
-router.use('/api', api.routes());
-app.use(router.routes());
+const app = express();
+const port = process.env.PORT || 3000;
 
-// db 연결
-mongoose.connect('mongodb://localhost/vntg_db', { useMongoClient: true });
+const MongoStore = connectMongo(session);
+
+/* SETUP MIDDLEWARE */
+app.use(bodyParser.json());
+app.use(session({
+  secret: process.env.SECRET_KEY || 'TempKey',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 14 * 24 * 60 * 60 * 1000,
+  },
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 14 * 24 * 60 * 60,
+  })
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', express.static(path.join(__dirname, '../../vntg_frontend/build/')));
+// app.use('/', express.static(path.join(__dirname, '../../vntg_frontend/src/')));
+
+app.use('/api', api);
+
+/* handle error */
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+      error: {
+          message: 'Something Broke!',
+          code: 0
+      }
+  });
+  next();
+});
+
+mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', () => {
-  console.log("Connected to mongod server");
-})
+    console.log('Connected to mongod server');
+});
 
-// const Book = require('./models/book');
-// const User = require('./models/user');
 
-// const user = new User({
-//   username: 'jinx2',
-//   thumbnail: 'jinx2.png',
-//   displayName: 'jinx hwang2',
-//   description: '2222 jonna jjangjjang man',
-//   email: 'cjswp122@gmail.com',
-// });
+// ENABLE DEBUG WHEN DEV ENVIRONMENT
+if(process.env.NODE_ENV === 'development') {
+    mongoose.set('debug', true);
+    app.use(morgan('tiny')); // server logger
+}
+// 'mongodb://localhost/vntg_db', { useMongoClient: true }
+// mongoose.connect(process.env.DB_URI);
+mongoose.connect('mongodb://localhost/vntg_db', { useMongoClient: true });
 
-// user.save((err, user)=> {
-//   if(err) return console.error(err);
-//   console.dir(user);
-// });
-
-app.use(async (ctx, next) => {
-  ctx.body = 'hlllllll';
-})
-
-app.listen(3000, () => {
-  console.log('listening on port 3000');
+const server = http.createServer(app).listen(port, () => {
+  console.log(`Express is running on port ${port}`);
 });

@@ -7,6 +7,9 @@ vntg_backend/node_modules
 # testing
 vntg_frontend/coverage
 
+# dot env setting
+vntg_backend/.env
+
 # production
 vntg_frontend/build
 

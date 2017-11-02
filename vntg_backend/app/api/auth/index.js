@@ -1,14 +1,12 @@
-const Router = require('koa-router');
+const express = require('express');
+const router = express.Router();
 
-const router = new Router();
-
-router.post('/login/:provider', (ctx, next) => {
-  console.log(ctx.request.body);
-  console.log(ctx.request.body.something);
-  ctx.body = {
-    provider: ctx.params.provider,
-    jeckson: 'oheelo',
-  };
+router.post('/login/:provider', (req, res) => {
+  console.log('p : ', req.params.provider);
+  console.log('p : ', req.body);
+  // console.log('res : ', res);
+  // console.log('session : ', req.session);
+  res.json({sessionID: req.sessionID, session: req.session});
 });
 
 module.exports = router;
