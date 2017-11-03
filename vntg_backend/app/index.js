@@ -1,4 +1,6 @@
 /* 모듈 불러오기 */
+require('dotenv').config();
+
 const http = require('http');
 
 const express = require('express');
@@ -68,9 +70,8 @@ if(process.env.NODE_ENV === 'development') {
     mongoose.set('debug', true);
     app.use(morgan('tiny')); // server logger
 }
-// 'mongodb://localhost/vntg_db', { useMongoClient: true }
-// mongoose.connect(process.env.DB_URI);
-mongoose.connect('mongodb://localhost/vntg_db', { useMongoClient: true });
+
+mongoose.connect(process.env.DB_URI, { useMongoClient: true });
 
 const server = http.createServer(app).listen(port, () => {
   console.log(`Express is running on port ${port}`);

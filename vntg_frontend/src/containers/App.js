@@ -18,9 +18,10 @@ import users from 'helpers/firebase/database/users';
 
 import storage from 'helpers/storage';
 
+import environment from 'environment';
+
 const { LoginModal, LinkAccountModal } = Modals;
 const { SocialLoginButton } = LoginModal;
-
 // import LoginModal, { SocialLoginButton } from 'components/Base/Modals';
 // import LinkAccountModal from 'components/Base/Modals';
 
@@ -77,37 +78,39 @@ class App extends Component {
     }
 
     handleAuth = async (provider) => {
-        const { handleModal } = this;
-        handleModal.close('login');
+        location.href = `${environment.backendUrl}/api/auth/login/${provider}`;
+
+        // const { handleModal } = this;
+        // handleModal.close('login');
         
-        try{
-            const loginData = await auth.signInWithPopup(provider);
+        // try{
+        //     const loginData = await auth.signInWithPopup(provider);
 
-            // 해당 유저가 가입되어있는지 체크
-            const uid = loginData.user.uid;
-            const profile = await users.findProfileById(uid);
+        //     // 해당 유저가 가입되어있는지 체크
+        //     const uid = loginData.user.uid;
+        //     const profile = await users.findProfileById(uid);
             
-            if(profile.exists()) {
-                // 이미 가입한 유저
-            } else {
-                // 안가입
-                // this.context.router.push('/register');
-                this.context.router.history.push('/register');
-            }
-        } catch(e) {
-            if(e.code === "auth/account-exists-with-different-credential"){
-                const exisitingProvider = await auth.getExistingProvider(e.email);
+        //     if(profile.exists()) {
+        //         // 이미 가입한 유저
+        //     } else {
+        //         // 안가입
+        //         // this.context.router.push('/register');
+        //         this.context.router.history.push('/register');
+        //     }
+        // } catch(e) {
+        //     if(e.code === "auth/account-exists-with-different-credential"){
+        //         const exisitingProvider = await auth.getExistingProvider(e.email);
 
-                handleModal.open({ 
-                    modalName: 'linkAccount',
-                    data: {
-                        credential: e.credential,
-                        provider,
-                        exisitingProvider,
-                    }
-                });
-            }
-        }
+        //         handleModal.open({ 
+        //             modalName: 'linkAccount',
+        //             data: {
+        //                 credential: e.credential,
+        //                 provider,
+        //                 exisitingProvider,
+        //             }
+        //         });
+        //     }
+        // }
     }
 
     handleClickBrandLogo = () => {
