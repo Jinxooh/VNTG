@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const connectMongo = require('connect-mongo');
 
 const passport = require('passport');
+require('./passport'); // set up passport
 
 const api = require('./api');
 

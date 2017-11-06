@@ -1,11 +1,14 @@
-import passport from 'passport';
-import { Strategy as FacebookStrategy }  from 'passport-facebook';
-import { Strategy as GoogleStrategy }  from 'passport-google-oauth20';
+const passport = require('passport');
+// import { Strategy as FacebookStrategy }  from 'passport-facebook';
+// import { Strategy as GoogleStrategy }  from 'passport-google-oauth20';
+// import { Strategy as LocalStrategy } from 'passport-local';
 
-import googleConfig from './google';
-import User from '../models/user';
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-import PassportError from './PassportError';
+const googleConfig = require('./google');
+// import User from '../models/user';
+
+// import PassportError from './PassportError';
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
