@@ -6,9 +6,5 @@
 //   res.json({sessionID: req.sessionID, session: req.session});
 // });
 
-module.exports = {
-  login: (req, res) => {
-      const { provider } = req.params;
-      ctx.redirect(oauthURL[provider]);
-  },
-}
+// const passport = require('passport');
+

@@ -78,7 +78,9 @@ class App extends Component {
     }
 
     handleAuth = async (provider) => {
-        location.href = `${environment.backendUrl}/api/auth/login/${provider}`;
+        // document.location.href = `${environment.backendUrl}/api/auth/login/${provider}`;
+        console.log('hhh');
+        document.location.href = `${environment.backendUrl}/api/auth/${provider}`
 
         // const { handleModal } = this;
         // handleModal.close('login');

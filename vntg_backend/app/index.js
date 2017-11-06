@@ -40,7 +40,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', express.static(path.join(__dirname, '../../vntg_frontend/build/')));
+// app.use('/', express.static(path.join(__dirname, '../../vntg_frontend/build/')));
 // app.use('/', express.static(path.join(__dirname, '../../vntg_frontend/src/')));
 
 app.use('/api', api);
